@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 
 import {
@@ -134,7 +131,9 @@ export default function App() {
           Affordable Fashion (₦2k - ₦5k)
         </motion.h1>
         <a href="https://wa.me/2349167046215">
-          <Button className="mt-4 text-black">Chat on WhatsApp</Button>
+          <button className="mt-4 px-6 py-2 bg-green-600 text-black font-semibold rounded hover:bg-green-700">
+            Chat on WhatsApp
+          </button>
         </a>
       </section>
 
@@ -148,34 +147,34 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <Card className="bg-slate-900">
-                <CardContent className="p-4">
-                  {p.image && (
-                    <img
-                      src={p.image}
-                      alt={p.name}
-                      className="rounded mb-2 w-full h-48 object-cover"
-                    />
-                  )}
-                  <h2 className="font-bold text-lg">{p.name}</h2>
-                  <p className="text-lg font-semibold">₦{p.price}</p>
+              <div className="bg-slate-900 rounded-lg overflow-hidden p-4">
+                {p.image && (
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="rounded mb-2 w-full h-48 object-cover"
+                  />
+                )}
+                <h2 className="font-bold text-lg">{p.name}</h2>
+                <p className="text-lg font-semibold">₦{p.price}</p>
 
-                  <a
-                    href={`https://wa.me/2349167046215?text=I want ${p.name} for ₦${p.price}`}
+                <a
+                  href={`https://wa.me/2349167046215?text=I want ${p.name} for ₦${p.price}`}
+                >
+                  <button className="mt-2 w-full py-2 bg-green-600 text-black font-semibold rounded hover:bg-green-700">
+                    Buy
+                  </button>
+                </a>
+
+                {user && (
+                  <button
+                    onClick={() => deleteProduct(p.id)}
+                    className="mt-2 w-full py-2 bg-red-600 text-white font-semibold rounded hover:bg-red-700"
                   >
-                    <Button className="mt-2 w-full text-black">Buy</Button>
-                  </a>
-
-                  {user && (
-                    <Button
-                      onClick={() => deleteProduct(p.id)}
-                      className="mt-2 w-full bg-red-600"
-                    >
-                      Delete
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
+                    Delete
+                  </button>
+                )}
+              </div>
             </motion.div>
           ))
         )}
@@ -186,71 +185,76 @@ export default function App() {
 
         {!user ? (
           <div className="space-y-3">
-            <Input
+            <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
               disabled={loading}
+              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
             />
-            <Input
+            <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               disabled={loading}
+              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
             />
-            <Button
+            <button
               onClick={login}
-              className="w-full text-black"
               disabled={loading}
+              className="w-full py-2 bg-green-600 text-black font-semibold rounded hover:bg-green-700 disabled:opacity-50"
             >
               {loading ? "Logging in..." : "Login"}
-            </Button>
+            </button>
           </div>
         ) : (
           <div className="space-y-3">
             <p className="text-green-400">✓ Logged in as Admin</p>
 
-            <Input
+            <input
               placeholder="Product name"
               value={newProduct.name}
               onChange={(e) =>
                 setNewProduct({ ...newProduct, name: e.target.value })
               }
               disabled={loading}
+              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
             />
 
-            <Input
+            <input
               placeholder="Price (₦)"
               value={newProduct.price}
               onChange={(e) =>
                 setNewProduct({ ...newProduct, price: e.target.value })
               }
               disabled={loading}
+              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
             />
 
-            <Input
+            <input
               type="file"
               onChange={(e) =>
                 setNewProduct({ ...newProduct, image: e.target.files[0] })
               }
               disabled={loading}
+              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
             />
 
-            <Button
+            <button
               onClick={addProduct}
-              className="w-full text-black"
               disabled={loading}
+              className="w-full py-2 bg-green-600 text-black font-semibold rounded hover:bg-green-700 disabled:opacity-50"
             >
               {loading ? "Adding..." : "Add Product"}
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={logout}
-              className="w-full bg-red-600"
               disabled={loading}
+              className="w-full py-2 bg-red-600 text-white font-semibold rounded hover:bg-red-700 disabled:opacity-50"
             >
               Logout
-            </Button>
+            </button>
           </div>
         )}
       </section>
