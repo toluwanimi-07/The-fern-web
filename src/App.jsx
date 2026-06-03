@@ -23,6 +23,7 @@ export default function App() {
     import.meta.env.VITE_ADMIN_EMAIL || "admin@thefern.com"
   );
   const [password, setPassword] = useState("");
+  const [showAdmin, setShowAdmin] = useState(false);
 
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
@@ -58,6 +59,7 @@ export default function App() {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
+      setShowAdmin(true);
     } catch (err) {
       alert("Login failed: " + err.message);
     } finally {
@@ -65,7 +67,11 @@ export default function App() {
     }
   };
 
-  const logout = () => signOut(auth);
+  const logout = () => {
+    signOut(auth);
+    setShowAdmin(false);
+    setPassword("");
+  };
 
   const uploadImage = async (file) => {
     const imageRef = ref(storage, `products/${Date.now()}-${file.name}`);
@@ -117,8 +123,13 @@ export default function App() {
       <div className="flex justify-between items-center px-6 py-4 border-b border-slate-800">
         <h1 className="font-bold text-xl">THE FERN</h1>
         <div className="space-x-4 text-sm text-slate-300">
-          <a href="#shop">Shop</a>
-          <a href="#admin">Admin</a>
+          <a href="#shop" className="hover:text-white">Shop</a>
+          <button 
+            onClick={() => setShowAdmin(!showAdmin)}
+            className="hover:text-white cursor-pointer"
+          >
+            Admin
+          </button>
         </div>
       </div>
 
@@ -180,84 +191,86 @@ export default function App() {
         )}
       </section>
 
-      <section id="admin" className="p-6 max-w-md mx-auto mb-10 bg-slate-900 rounded-xl">
-        <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
+      {showAdmin && (
+        <section id="admin" className="p-6 max-w-md mx-auto mb-10 bg-slate-900 rounded-xl">
+          <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
 
-        {!user ? (
-          <div className="space-y-3">
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              disabled={loading}
-              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              disabled={loading}
-              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
-            />
-            <button
-              onClick={login}
-              disabled={loading}
-              className="w-full py-2 bg-green-600 text-black font-semibold rounded hover:bg-green-700 disabled:opacity-50"
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-green-400">✓ Logged in as Admin</p>
+          {!user ? (
+            <div className="space-y-3">
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                disabled={loading}
+                className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                disabled={loading}
+                className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
+              />
+              <button
+                onClick={login}
+                disabled={loading}
+                className="w-full py-2 bg-green-600 text-black font-semibold rounded hover:bg-green-700 disabled:opacity-50"
+              >
+                {loading ? "Logging in..." : "Login"}
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-green-400">✓ Logged in as Admin</p>
 
-            <input
-              placeholder="Product name"
-              value={newProduct.name}
-              onChange={(e) =>
-                setNewProduct({ ...newProduct, name: e.target.value })
-              }
-              disabled={loading}
-              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
-            />
+              <input
+                placeholder="Product name"
+                value={newProduct.name}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, name: e.target.value })
+                }
+                disabled={loading}
+                className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
+              />
 
-            <input
-              placeholder="Price (₦)"
-              value={newProduct.price}
-              onChange={(e) =>
-                setNewProduct({ ...newProduct, price: e.target.value })
-              }
-              disabled={loading}
-              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
-            />
+              <input
+                placeholder="Price (₦)"
+                value={newProduct.price}
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, price: e.target.value })
+                }
+                disabled={loading}
+                className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
+              />
 
-            <input
-              type="file"
-              onChange={(e) =>
-                setNewProduct({ ...newProduct, image: e.target.files[0] })
-              }
-              disabled={loading}
-              className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
-            />
+              <input
+                type="file"
+                onChange={(e) =>
+                  setNewProduct({ ...newProduct, image: e.target.files[0] })
+                }
+                disabled={loading}
+                className="w-full px-4 py-2 bg-slate-800 text-white rounded border border-slate-700 focus:border-green-600 outline-none"
+              />
 
-            <button
-              onClick={addProduct}
-              disabled={loading}
-              className="w-full py-2 bg-green-600 text-black font-semibold rounded hover:bg-green-700 disabled:opacity-50"
-            >
-              {loading ? "Adding..." : "Add Product"}
-            </button>
-            <button
-              onClick={logout}
-              disabled={loading}
-              className="w-full py-2 bg-red-600 text-white font-semibold rounded hover:bg-red-700 disabled:opacity-50"
-            >
-              Logout
-            </button>
-          </div>
-        )}
-      </section>
+              <button
+                onClick={addProduct}
+                disabled={loading}
+                className="w-full py-2 bg-green-600 text-black font-semibold rounded hover:bg-green-700 disabled:opacity-50"
+              >
+                {loading ? "Adding..." : "Add Product"}
+              </button>
+              <button
+                onClick={logout}
+                disabled={loading}
+                className="w-full py-2 bg-red-600 text-white font-semibold rounded hover:bg-red-700 disabled:opacity-50"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }
